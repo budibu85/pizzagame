@@ -16,15 +16,21 @@ namespace BudiBu85.PizzaGame
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var match = _play.Init();
-            _logger.LogInformation($"Sul tavolo ci sono: {match.Pizzas.Count} pizze");
-            var lastChoice = 0;
 
+            _logger.LogInformation($"Sul tavolo ci sono: {match.Pizzas.Count} pizze");
+
+            //finche un giocatore non mangia la pizza avvelanta gioco.
             while (!match.PlayerB.IsDeath && !match.PlayerA.IsDeath)
             {
-                _play.Play(match.Pizzas, match.PlayerA,match.PlayerB,lastChoice);
+                //inizio la simulazione passando al metodo pizze,
+                //giocatore numero1,
+                //giocatore numero2,
+                _play.Play(match.Pizzas, match.PlayerA, match.PlayerB);
             }
+
+            await Task.FromResult(0);
         }
 
-       
+
     }
 }
