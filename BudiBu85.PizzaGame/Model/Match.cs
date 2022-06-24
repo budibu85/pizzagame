@@ -11,6 +11,7 @@ namespace BudiBu85.PizzaGame.Model
         public Queue<int> Pizzas { get; set; }
         public Player PlayerA { get; set; } = new Player("A");
         public Player PlayerB { get; set; } = new Player("B");
+        public TypeOfGame TOG { get; set; }
 
         public Match()
         {
@@ -24,5 +25,12 @@ namespace BudiBu85.PizzaGame.Model
             for (int i = 1; i <= number; i++)
                 Pizzas.Enqueue(i);
         }
+    }
+
+    public enum TypeOfGame
+    {
+        None,
+        Simulato,
+        Manuale
     }
 }

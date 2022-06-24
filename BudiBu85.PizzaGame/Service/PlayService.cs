@@ -29,7 +29,7 @@ namespace BudiBu85.PizzaGame.Service
         /// <param name="next"></param>
         /// <param name="lastChoice"></param>
         /// <returns></returns>
-        public int Play(Queue<int> remainingPizzas, Player current, Player next, int lastChoice = 0)
+        public int Play(Queue<int> remainingPizzas, Player current, Player next, TypeOfGame tog, int lastChoice = 0)
         {
 
             Console.WriteLine($"Tocca al giocatore {current.Name}");
@@ -48,12 +48,26 @@ namespace BudiBu85.PizzaGame.Service
                 return currentChoice;
             }
 
-            //controllo la scelta e finchè non è corretta resto in attesa
+            //controllo la scelta e finchè non è corretta resto in attesa 
             do
             {
-                Int32.TryParse(Console.ReadLine(), out currentChoice);
-                if (!res.Contains(currentChoice))
-                    Console.WriteLine($"Inserisci una scelta valida tra {string.Join(", ", res)}");
+                switch (tog)
+                {
+                    //se manuale faccio scegliere all'utente
+                    case TypeOfGame.Manuale:
+                        Int32.TryParse(Console.ReadLine(), out currentChoice);
+                        if (!res.Contains(currentChoice))
+                            Console.WriteLine($"Inserisci una scelta valida tra {string.Join(", ", res)}");
+                        break;
+
+                    //se simulato prendo randomicamente una scelta possibile tra quelle esistenti
+                    case TypeOfGame.Simulato:
+                        var index = new Random().Next(0, res.Count);
+                        currentChoice = res[index];
+                        break;
+                    default:
+                        return 0;
+                }
 
             } while (!res.Contains(currentChoice));
 
@@ -73,7 +87,7 @@ namespace BudiBu85.PizzaGame.Service
             Console.WriteLine($"Il giocatore {current.Name} ha scelto {currentChoice} pizze - Sul tavolo ci sono: {remainingPizzas.Count} pizze");
 
             //ricorsivamente chiamo la funzione di gioco invertendo i giocatori
-            return Play(remainingPizzas, next, current, currentChoice);
+            return Play(remainingPizzas, next, current, tog, currentChoice);
 
         }
     }
@@ -83,7 +97,7 @@ namespace BudiBu85.PizzaGame.Service
         Match Init();
 
 
-        int Play(Queue<int> remainingPizzas, Player current , Player next ,int lastChoice = 0);
+        int Play(Queue<int> remainingPizzas, Player current, Player next, TypeOfGame tog, int lastChoice = 0);
 
     }
 }
