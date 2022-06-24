@@ -31,6 +31,7 @@ namespace BudiBu85.PizzaGame.Service
             if (res.Count == 0)
             {
                 Console.WriteLine($"Il giocatore {current.Name} è costretto a saltare il turno");
+                Console.WriteLine($"Il giocatore {next.Name} ha perso perchè è rimasta una sola pizza");
                 next.IsDeath = true;
                 return number;
             }
