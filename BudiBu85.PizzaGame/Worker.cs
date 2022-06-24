@@ -17,7 +17,7 @@ namespace BudiBu85.PizzaGame
         {
             var match = _play.Init();
 
-            _logger.LogInformation($"Sul tavolo ci sono: {match.Pizzas.Count} pizze");
+            Console.WriteLine($"Sul tavolo ci sono: {match.Pizzas.Count} pizze");
 
             //finche un giocatore non mangia la pizza avvelanta gioco.
             while (!match.PlayerB.IsDeath && !match.PlayerA.IsDeath)
