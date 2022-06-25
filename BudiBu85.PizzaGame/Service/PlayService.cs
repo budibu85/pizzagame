@@ -14,9 +14,9 @@ namespace BudiBu85.PizzaGame.Service
         /// Inizializzo il match generando la coda randomica
         /// </summary>
         /// <returns></returns>
-        public Match Init()
+        public Match Init(int tog)
         {
-            var match = new Match();
+            var match = new Match() { TOG = (TypeOfGame)tog };
             match.InitPizzas();
             return match;
         }
@@ -29,7 +29,7 @@ namespace BudiBu85.PizzaGame.Service
         /// <param name="next"></param>
         /// <param name="lastChoice"></param>
         /// <returns></returns>
-        public int Play(Queue<int> remainingPizzas, Player current, Player next, TypeOfGame tog, int lastChoice = 0)
+        public void Play(Queue<int> remainingPizzas, Player current, Player next, TypeOfGame tog, int lastChoice = 0)
         {
 
             Console.WriteLine($"Tocca al giocatore {current.Name}");
@@ -39,14 +39,21 @@ namespace BudiBu85.PizzaGame.Service
             var res = new List<int>() { 1, 2, 3 };
             res.RemoveAll(x => x > remainingPizzas.Count || x == lastChoice);
 
+            if (res.Count == 1 && remainingPizzas.Count == res.FirstOrDefault())
+            {
+                Console.WriteLine($"Il giocatore {current.Name} ha perso perchè la sua unica scelta è mangiare la pizza avvelenata");
+                current.IsDeath = true;
+                return;
+            }
+
             //salta il turno
             if (res.Count == 0)
             {
                 Console.WriteLine($"Il giocatore {current.Name} è costretto a saltare il turno");
                 Console.WriteLine($"Il giocatore {next.Name} ha perso perchè è rimasta una sola pizza");
                 next.IsDeath = true;
-                return currentChoice;
-            }
+                return;
+            }           
 
             //controllo la scelta e finchè non è corretta resto in attesa 
             do
@@ -66,7 +73,7 @@ namespace BudiBu85.PizzaGame.Service
                         currentChoice = res[index];
                         break;
                     default:
-                        return 0;
+                        return;
                 }
 
             } while (!res.Contains(currentChoice));
@@ -80,24 +87,23 @@ namespace BudiBu85.PizzaGame.Service
             {
                 Console.WriteLine($"Il giocatore {current.Name} ha perso perchè ha mangiato l'ultima pizza");
                 current.IsDeath = true;
-                return 0;
+                return;
             }
 
             //aggiorno lo stato del gioco
             Console.WriteLine($"Il giocatore {current.Name} ha scelto {currentChoice} pizze - Sul tavolo ci sono: {remainingPizzas.Count} pizze");
 
             //ricorsivamente chiamo la funzione di gioco invertendo i giocatori
-            return Play(remainingPizzas, next, current, tog, currentChoice);
+            Play(remainingPizzas, next, current, tog, currentChoice);
 
         }
     }
 
     public interface IPlayService
     {
-        Match Init();
+        Match Init(int tog);
 
-
-        int Play(Queue<int> remainingPizzas, Player current, Player next, TypeOfGame tog, int lastChoice = 0);
+        void Play(Queue<int> remainingPizzas, Player current, Player next, TypeOfGame tog, int lastChoice = 0);
 
     }
 }
